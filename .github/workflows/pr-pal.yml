@@ -1,0 +1,45 @@
+name: pr-pal
+
+on:
+  schedule:
+    - cron: "2-57/5 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: pr-pal
+  cancel-in-progress: false
+
+jobs:
+  approve:
+    if: github.repository_owner == github.actor || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GITHUB_ORG: ${{ vars.GITHUB_ORG }}
+      ME: ${{ vars.ME }}
+      EXTRA_BUDDIES: ${{ vars.BUDDIES }}
+      DRY_RUN: ${{ vars.DRY_RUN }}
+      SKIP_DRAFTS: ${{ vars.SKIP_DRAFTS }}
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+      TOKEN_DIR: ${{ runner.temp }}/tokens
+      HEARTBEAT_FILE: ${{ runner.temp }}/heartbeat
+    steps:
+      - name: Fetch the script from this repository
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw" \
+            "https://api.github.com/repos/$REPO/contents/pr_pal_poller.py?ref=$SHA" -o pr_pal_poller.py
+      - name: Stage the token
+        env:
+          TOKEN: ${{ secrets.PR_PAL_TOKEN }}
+        run: |
+          test -n "$TOKEN" || { echo "PR_PAL_TOKEN secret is not set"; exit 1; }
+          test -n "$ME" || { echo "ME variable (your GitHub login) is not set"; exit 1; }
+          mkdir -p "$TOKEN_DIR" && umask 077 && printf %s "$TOKEN" > "$TOKEN_DIR/$ME"
+      - name: Approve buddy pull requests
+        run: python3 -I pr_pal_poller.py --once
