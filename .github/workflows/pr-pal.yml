@@ -22,8 +22,8 @@ jobs:
       DRY_RUN: ${{ vars.DRY_RUN }}
       SKIP_DRAFTS: ${{ vars.SKIP_DRAFTS }}
       LOG_LEVEL: ${{ vars.LOG_LEVEL }}
-      TOKEN_DIR: ${{ runner.temp }}/tokens
-      HEARTBEAT_FILE: ${{ runner.temp }}/heartbeat
+      TOKEN_DIR: ${{ github.workspace }}/.tokens
+      HEARTBEAT_FILE: ${{ github.workspace }}/.heartbeat-run
     steps:
       - name: Fetch the script from this repository
         env:
