@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      GITHUB_ORG: ${{ vars.GITHUB_ORG }}
+      GITHUB_ORG: ${{ vars.PR_PAL_ORG }}
       ME: ${{ vars.ME }}
       EXTRA_BUDDIES: ${{ vars.BUDDIES }}
       DRY_RUN: ${{ vars.DRY_RUN }}

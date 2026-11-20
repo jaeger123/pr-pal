@@ -10,7 +10,7 @@ Each buddy hosts their own copy with their own token. Your copy approves their P
 2. Fork or copy this repository into your **personal** account. Keep it public (unlimited free Actions minutes) with zero collaborators.
 3. Settings → Secrets and variables → Actions:
    - Secret `PR_PAL_TOKEN` = the token from step 1.
-   - Variables: `ME` = your corporate login, `BUDDIES` = comma-separated buddy logins, `GITHUB_ORG` = the org, `DRY_RUN` = `1` to start, `SKIP_DRAFTS` = `1`, `LOG_LEVEL` = `INFO`.
+   - Variables: `ME` = your corporate login, `BUDDIES` = comma-separated buddy logins, `PR_PAL_ORG` = the org, `DRY_RUN` = `1` to start, `SKIP_DRAFTS` = `1`, `LOG_LEVEL` = `INFO`.
 4. Settings → Actions → General: "Allow all actions" is not needed; this workflow uses none. Set workflow permissions to **Read repository contents**. Enable "Require approval for all external contributors".
 5. Settings → Branches: protect `main` so only you can push.
 6. Run the workflow once from the Actions tab, read the `[dry-run] would approve` lines, then set `DRY_RUN` to `0`.
