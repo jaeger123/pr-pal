@@ -34,7 +34,7 @@ It creates `<you>/pr-pal` from this template, sets the variables, asks for your 
 
 ## Latency
 
-GitHub runs `schedule` at best every 5 minutes and sometimes late at the top of the hour; this workflow runs at minute 2, 7, 12 and so on to dodge that. For about 1 minute latency, something that is always on can hit `workflow_dispatch` every minute with a fine-grained PAT from your **personal** account scoped to this one repository with only **Actions: Read and write**. If that token leaks, the worst anyone can do is trigger or cancel a run.
+GitHub runs `schedule` at best every 5 minutes and sometimes late at the top of the hour; this is simply every 5 minutes. For about 1 minute latency, something that is always on can hit `workflow_dispatch` every minute with a fine-grained PAT from your **personal** account scoped to this one repository with only **Actions: Read and write**. If that token leaks, the worst anyone can do is trigger or cancel a run.
 
 ## Keeping it alive
 
