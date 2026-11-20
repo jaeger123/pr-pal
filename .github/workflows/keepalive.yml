@@ -1,0 +1,23 @@
+name: keepalive
+
+on:
+  schedule:
+    - cron: "17 3 1,15 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  touch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Bump the heartbeat file so scheduled workflows are never auto-disabled
+        run: |
+          sha=$(gh api "repos/$REPO/contents/.heartbeat" --jq .sha 2>/dev/null || true)
+          body=$(printf '%s' "$(date -u +%FT%TZ)" | base64)
+          gh api -X PUT "repos/$REPO/contents/.heartbeat" -f message="keepalive $(date -u +%F)" -f content="$body" ${sha:+-f sha=$sha} >/dev/null

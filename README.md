@@ -1,13 +1,23 @@
-# pr-pal (GitHub Actions edition)
+# pr-pal
 
-Approves a buddy's pull requests on your behalf, every 5 minutes, from a repository that **only you** own. Your token never leaves GitHub, and nobody at your company, including org owners and cluster admins, can read it: repository secrets cannot be read back, and nobody but you can push a workflow change to this repo.
+Approves your buddies' pull requests on your behalf, every 5 minutes, from a repository that **only you** own. Your token never leaves GitHub, and nobody at your company, including org owners and cluster admins, can read it: repository secrets cannot be read back, and nobody but you can push a workflow change to your copy.
 
-Each buddy hosts their own copy with their own token. Your copy approves their PRs; theirs approves yours.
+Everyone who joins hosts their own copy with their own token and their own buddy list. Your copy approves their PRs; theirs approve yours.
 
-## One-time setup
+## Join in one command
 
+On your machine, with `gh` logged in to your **personal** GitHub account:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/jaeger123/pr-pal/main/setup.sh -o setup.sh
+bash setup.sh <your-corporate-login> <buddy-login>[,<buddy-login>...]
+```
+
+It creates `<you>/pr-pal` from this template, sets the variables, asks for your corporate token without echoing it, and fires a dry run. Then tell your buddies your corporate login so they add you to their `BUDDIES`.
+
+## Manual setup
 1. Create a fine-grained personal access token on your **corporate** account: resource owner = your org, only the repositories you review, permission **Pull requests: Read and write**, expiry 1 year. Nothing else.
-2. Fork or copy this repository into your **personal** account. Keep it public (unlimited free Actions minutes) with zero collaborators.
+2. Click **Use this template** to copy this repository into your **personal** account. Keep it public (unlimited free Actions minutes) with zero collaborators.
 3. Settings → Secrets and variables → Actions:
    - Secret `PR_PAL_TOKEN` = the token from step 1.
    - Variables: `ME` = your corporate login, `BUDDIES` = comma-separated buddy logins, `PR_PAL_ORG` = the org, `DRY_RUN` = `1` to start, `SKIP_DRAFTS` = `1`, `LOG_LEVEL` = `INFO`.
@@ -28,4 +38,4 @@ GitHub runs `schedule` at best every 5 minutes and sometimes late at the top of 
 
 ## Keeping it alive
 
-GitHub disables scheduled workflows in public repos after 60 days without repository activity. Any commit resets the clock, so touch this README every couple of months, or let the buddy's `workflow_dispatch` pings do it if you set that up.
+GitHub disables scheduled workflows in public repos after 60 days without repository activity. The `keepalive` workflow commits a timestamp to `.heartbeat` twice a month so that never happens.
